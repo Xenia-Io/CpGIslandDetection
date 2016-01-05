@@ -5,10 +5,13 @@
  */
 package gr.demokritos.iit.cpgislanddetection;
 
+import be.ac.ulg.montefiore.run.jahmm.ObservationDiscrete;
+import gr.demokritos.iit.cpgislanddetection.analysis.HmmAnalyzer;
 import gr.demokritos.iit.cpgislanddetection.analysis.ICpGSequenceDetector;
 import gr.demokritos.iit.cpgislanddetection.analysis.VectorSequenceDetector;
 import gr.demokritos.iit.cpgislanddetection.analysis.VectorAnalyzer;
 import gr.demokritos.iit.cpgislanddetection.entities.BaseSequence;
+import gr.demokritos.iit.cpgislanddetection.entities.HmmSequence;
 import gr.demokritos.iit.cpgislanddetection.entities.IGenomicSequence;
 import gr.demokritos.iit.cpgislanddetection.io.ARSSFileReader;
 import gr.demokritos.iit.cpgislanddetection.io.IGenomicSequenceFileReader;
@@ -47,15 +50,28 @@ public class CpGIslandDetection {
             // Count successes and failures
         
         // Output results
+//        
+//        VectorAnalyzer v = new VectorAnalyzer();
+//        
+//        Vector<Vector<Integer>> myVec = v.analyze(lSeqs);
+//        int count=0;
+//        for(Vector vec: myVec){
+//        count++;
+//            System.out.println(count+":"+vec+" ");
+//        }
         
-        VectorAnalyzer v = new VectorAnalyzer();
+        HmmSequence hmm = new HmmSequence();
+        String str = hmm.getSymbolSequence();
+        //System.out.println(str);
         
-        Vector<Vector<Integer>> myVec = v.analyze(lSeqs);
-        int count=0;
-        for(Vector vec: myVec){
-        count++;
-            System.out.println(count+":"+vec+" ");
-        }
+//        HmmAnalyzer h = new HmmAnalyzer();
+//        List<ObservationDiscrete<HmmSequence.Packet>> p = h.analyze(lSeqs);
+//        int count=0;
+//        for(ObservationDiscrete k:p){
+//        
+//            count++;
+//            System.out.println(count+":"+k+"");
+//        }
          
     }
     

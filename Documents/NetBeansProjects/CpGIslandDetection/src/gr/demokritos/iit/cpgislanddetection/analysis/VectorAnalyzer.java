@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author Xenia
  */
-public class VectorAnalyzer implements ISequenceAnalyst<Vector> {
+public class VectorAnalyzer implements ISequenceAnalyst<Vector<Vector<Integer>>> {
 
     /**
      *
