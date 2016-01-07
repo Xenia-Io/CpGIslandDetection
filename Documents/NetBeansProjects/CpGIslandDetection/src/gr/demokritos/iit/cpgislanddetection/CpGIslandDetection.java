@@ -1,23 +1,28 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright 2016 NCSR Demokritos.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package gr.demokritos.iit.cpgislanddetection;
 
 import be.ac.ulg.montefiore.run.jahmm.ObservationDiscrete;
 import gr.demokritos.iit.cpgislanddetection.analysis.HmmAnalyzer;
-import gr.demokritos.iit.cpgislanddetection.analysis.ICpGSequenceDetector;
-import gr.demokritos.iit.cpgislanddetection.analysis.VectorSequenceDetector;
-import gr.demokritos.iit.cpgislanddetection.analysis.VectorAnalyzer;
 import gr.demokritos.iit.cpgislanddetection.entities.BaseSequence;
 import gr.demokritos.iit.cpgislanddetection.entities.HmmSequence;
-import gr.demokritos.iit.cpgislanddetection.entities.IGenomicSequence;
 import gr.demokritos.iit.cpgislanddetection.io.ARSSFileReader;
 import gr.demokritos.iit.cpgislanddetection.io.IGenomicSequenceFileReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  *
@@ -33,7 +38,14 @@ public class CpGIslandDetection {
         
         // Read training file
         IGenomicSequenceFileReader reader = new ARSSFileReader();
-        ArrayList<BaseSequence> lSeqs = reader.getSequencesFromFile("C:\\Users\\Xenia\\Desktop\\negSamples.txt");
+        ArrayList<BaseSequence> lSeqs;
+        // If no input file has been given
+        if (args.length == 0) 
+            // Use default
+            lSeqs = reader.getSequencesFromFile("C:\\Users\\Xenia\\Desktop\\negSamples.txt");
+        else
+            // else use the provided one
+            lSeqs = reader.getSequencesFromFile(args[0]);
         
 //        int counter =0;
 //        for (BaseSequence elem : lSeqs) {
@@ -65,7 +77,7 @@ public class CpGIslandDetection {
         //System.out.println(str);
         
         HmmAnalyzer h = new HmmAnalyzer();
-        List<ObservationDiscrete<HmmSequence.Packet>> p = h.analyze(lSeqs);
+        List<List<ObservationDiscrete<HmmSequence.Packet>>> p = h.analyze(lSeqs);
 //        int count=0;
 //        for(ObservationDiscrete k:p){
 //        
