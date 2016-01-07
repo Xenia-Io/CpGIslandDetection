@@ -41,8 +41,9 @@ import gr.demokritos.iit.cpgislanddetection.entities.HmmSequence.Packet;
 import gr.demokritos.iit.cpgislanddetection.entities.HmmSequence;
 
 /**
- * HmmAnalyzer creates a Hidden Markov Model from a List of Strings or
- * Observations (like buildSequence function)
+ * HmmAnalyzer creates a sequence of A,T,C,G from a List of Strings or
+ * Observations (like buildSequence function) returns a
+ * List<ObservationDiscrete<Packet>>
  *
  * @author Xenia
  */
@@ -51,14 +52,8 @@ public class HmmAnalyzer implements ISequenceAnalyst<List<ObservationDiscrete<Pa
     @Override
     public List<ObservationDiscrete<Packet>> analyze(ArrayList<BaseSequence> baseSeq) {
 
-        int countAden, countThym, countGouan, countCyt;
-        double arrayForCounting[][] = new double[baseSeq.size()][4];
-        double[] aden = new double[baseSeq.size()];
-        double[] thym = new double[baseSeq.size()];
-        double[] cyt = new double[baseSeq.size()];
-        double[] gouan = new double[baseSeq.size()];
-
-        List<ObservationDiscrete<Packet>> testSeq = new ArrayList<ObservationDiscrete<Packet>>();
+        List<ObservationDiscrete<Packet>> testSeq
+                = new ArrayList<ObservationDiscrete<Packet>>();
 
         ObservationDiscrete<Packet> packetA = Packet.A.observation();
         ObservationDiscrete<Packet> packetT = Packet.T.observation();
@@ -66,50 +61,8 @@ public class HmmAnalyzer implements ISequenceAnalyst<List<ObservationDiscrete<Pa
         ObservationDiscrete<Packet> packetG = Packet.G.observation();
 
         for (int line = 0; line < baseSeq.size(); line++) {
-
-            countAden = 0;
-            countCyt = 0;
-            countGouan = 0;
-            countThym = 0;
-
             String currentStr = baseSeq.get(line).getSymbolSequence();
-
-            for (int i = 0; i < baseSeq.get(line).myLength(currentStr); i++) {
-
-                if (baseSeq.get(line).myCharAt(i, currentStr) == 'A') {
-
-                    // Count base appearences and save it
-                    countAden++;
-                    arrayForCounting[line][0] = countAden;
-
-                } else if (baseSeq.get(line).myCharAt(i, currentStr) == 'T') {
-
-                    // Count base appearences and save it
-                    countThym++;
-                    arrayForCounting[line][1] = countThym;
-
-                } else if (baseSeq.get(line).myCharAt(i, currentStr) == 'C') {
-
-                    // Count base appearences and save it
-                    countCyt++;
-                    arrayForCounting[line][2] = countCyt;
-
-                } else if (baseSeq.get(line).myCharAt(i, currentStr) == 'G') {
-
-                    // Count base appearences and save it
-                    countGouan++;
-                    arrayForCounting[line][3] = countGouan;
-
-                }
-
-            }
-
-            //compute emission probabilities
-            aden[line] = (arrayForCounting[line][0] / (arrayForCounting[line][0] + arrayForCounting[line][1] + arrayForCounting[line][2] + arrayForCounting[line][3]));
-            thym[line] = (arrayForCounting[line][1] / (arrayForCounting[line][0] + arrayForCounting[line][1] + arrayForCounting[line][2] + arrayForCounting[line][3]));
-            cyt[line] = (arrayForCounting[line][2] / (arrayForCounting[line][0] + arrayForCounting[line][1] + arrayForCounting[line][2] + arrayForCounting[line][3]));
-            gouan[line] = (arrayForCounting[line][3] / (arrayForCounting[line][0] + arrayForCounting[line][1] + arrayForCounting[line][2] + arrayForCounting[line][3]));
-            
+            System.out.println(currentStr);
             for (int i = 0; i < baseSeq.get(line).myLength(currentStr); i++) {
                 if (baseSeq.get(line).myCharAt(i, currentStr) == 'A') {
 
@@ -129,6 +82,7 @@ public class HmmAnalyzer implements ISequenceAnalyst<List<ObservationDiscrete<Pa
 
                 }
             }
+            System.out.println(testSeq);
         }
 
         return testSeq;

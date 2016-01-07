@@ -64,8 +64,8 @@ public class CpGIslandDetection {
         String str = hmm.getSymbolSequence();
         //System.out.println(str);
         
-//        HmmAnalyzer h = new HmmAnalyzer();
-//        List<ObservationDiscrete<HmmSequence.Packet>> p = h.analyze(lSeqs);
+        HmmAnalyzer h = new HmmAnalyzer();
+        List<ObservationDiscrete<HmmSequence.Packet>> p = h.analyze(lSeqs);
 //        int count=0;
 //        for(ObservationDiscrete k:p){
 //        
