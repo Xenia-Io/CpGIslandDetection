@@ -17,6 +17,7 @@ package gr.demokritos.iit.cpgislanddetection;
 
 import be.ac.ulg.montefiore.run.jahmm.ObservationDiscrete;
 import gr.demokritos.iit.cpgislanddetection.analysis.HmmAnalyzer;
+import gr.demokritos.iit.cpgislanddetection.analysis.HmmClassifier;
 import gr.demokritos.iit.cpgislanddetection.entities.BaseSequence;
 import gr.demokritos.iit.cpgislanddetection.entities.HmmSequence;
 import gr.demokritos.iit.cpgislanddetection.io.ARSSFileReader;
@@ -75,9 +76,18 @@ public class CpGIslandDetection {
         HmmSequence hmm = new HmmSequence();
         String str = hmm.getSymbolSequence();
         //System.out.println(str);
+        List<Double> doubleList = new ArrayList<Double>();
+        HmmClassifier hmmC = new HmmClassifier();
+        doubleList = hmmC.computePositiveProbability(lSeqs);
+        int count=0;
+        for(Double d:doubleList){
+        count++;
+            //System.out.println(count);
+        System.err.println(count+":"+d+"");
+        }
         
-        HmmAnalyzer h = new HmmAnalyzer();
-        List<List<ObservationDiscrete<HmmSequence.Packet>>> p = h.analyze(lSeqs);
+//        HmmAnalyzer h = new HmmAnalyzer();
+//        List<List<ObservationDiscrete<HmmSequence.Packet>>> p = h.analyze(lSeqs);
 //        int count=0;
 //        for(ObservationDiscrete k:p){
 //        
