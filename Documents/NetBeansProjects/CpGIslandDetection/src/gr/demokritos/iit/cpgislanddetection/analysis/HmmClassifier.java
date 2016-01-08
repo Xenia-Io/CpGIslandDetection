@@ -104,27 +104,10 @@ public class HmmClassifier implements ISequenceClassifier<List<List<ObservationD
             //System.out.println(learntHmm);
             //System.out.println(hmm);
             
-             System.out.println(testSequence.get(line));
+            System.out.println(testSequence.get(line));
             List<ObservationDiscrete<HmmSequence.Packet>> a = testSequence.get(line);
-hmm.probability(a);
-//-----------            
-//            List<List<ObservationDiscrete<HmmSequence.Packet>>> sequences;
-//            sequences = generateSequences(hmm);
-//            //System.out.println(sequences);
-//
-            // This object measures the distance between two HMMs
-//            KullbackLeiblerDistanceCalculator klc = new KullbackLeiblerDistanceCalculator();
-//
-//            // Incrementally improve the solution
-//            for (int i = 0; i < 10; i++) {
-//                
-//                klc.distance(learntHmm, hmm);
-//                learntHmm = bwl.iterate(learntHmm, testSequence);
-//            }
-//------      
-//            List<ObservationDiscrete<HmmSequence.Packet>> testSequence
-//                    = new ArrayList<ObservationDiscrete<HmmSequence.Packet>>();
-//
+            hmm.probability(a);
+
             // doubleList.add(learntHmm.probability(testSequence.get(line)));
 //            doubleList.add(learntHmm.probability(testSequence.get(line)));
 //              System.out.println(learntHmm.probability(testSequence.get(line)));
@@ -133,10 +116,7 @@ hmm.probability(a);
             //}
          
             
-    }
-//        for(int line=0; line<baseSeq.size();line++)
-//        { System.out.println(hmm.probability(testSequence.get(line)));}
-//            
+    }          
 return doubleList;
     
 }
