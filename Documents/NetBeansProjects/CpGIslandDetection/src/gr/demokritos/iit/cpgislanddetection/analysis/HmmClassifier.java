@@ -48,8 +48,8 @@ public class HmmClassifier implements ISequenceClassifier<List<List<ObservationD
         
         List<Double> doubleList = new ArrayList<Double>();
         List<List<ObservationDiscrete<HmmSequence.Packet>>> testSequence;
-        Hmm<ObservationDiscrete<HmmSequence.Packet>> learntHmm;
-        Hmm<ObservationDiscrete<HmmSequence.Packet>> hmm;
+        Hmm<ObservationDiscrete<HmmSequence.Packet>> learntHmm = buildInitHmm();;
+        Hmm<ObservationDiscrete<HmmSequence.Packet>> hmm=null;
         
         /* Baum-Welch learning */
         BaumWelchLearner bwl = new BaumWelchLearner();
@@ -57,7 +57,7 @@ public class HmmClassifier implements ISequenceClassifier<List<List<ObservationD
         //create the appropriate representation for my stringl-list from a file
         HmmAnalyzer h = new HmmAnalyzer();
         testSequence = h.analyze(baseSeq);
-        
+        //System.out.println(testSequence);
         //gia to ka8e stoixeio ths listas vriskw to plithos twn A,T,C,G kai ta apo8hkeuw se enan pinaka
         for (int line = 0; line < baseSeq.size(); line++) {
 
@@ -99,37 +99,44 @@ public class HmmClassifier implements ISequenceClassifier<List<List<ObservationD
             gouan[line] = (arrayForCounting[line][3] / (arrayForCounting[line][0] + arrayForCounting[line][1] + arrayForCounting[line][2] + arrayForCounting[line][3]));
 
             //build learntHmm and hmm for each sequence
-            learntHmm = buildInitHmm();
+            
             hmm = buildHmm(aden[line], thym[line], cyt[line], gouan[line]);
+            //System.out.println(learntHmm);
             //System.out.println(hmm);
-
-            List<List<ObservationDiscrete<HmmSequence.Packet>>> sequences;
-            sequences = generateSequences(hmm);
-            //System.out.println(sequences);
-
+            
+             System.out.println(testSequence.get(line));
+            List<ObservationDiscrete<HmmSequence.Packet>> a = testSequence.get(line);
+hmm.probability(a);
+//-----------            
+//            List<List<ObservationDiscrete<HmmSequence.Packet>>> sequences;
+//            sequences = generateSequences(hmm);
+//            //System.out.println(sequences);
+//
             // This object measures the distance between two HMMs
-            KullbackLeiblerDistanceCalculator klc = new KullbackLeiblerDistanceCalculator();
-
-            // Incrementally improve the solution
-            for (int i = 0; i < 10; i++) {
-                
-                klc.distance(learntHmm, hmm);
-                learntHmm = bwl.iterate(learntHmm, sequences);
-            }
-        
+//            KullbackLeiblerDistanceCalculator klc = new KullbackLeiblerDistanceCalculator();
+//
+//            // Incrementally improve the solution
+//            for (int i = 0; i < 10; i++) {
+//                
+//                klc.distance(learntHmm, hmm);
+//                learntHmm = bwl.iterate(learntHmm, testSequence);
+//            }
+//------      
 //            List<ObservationDiscrete<HmmSequence.Packet>> testSequence
 //                    = new ArrayList<ObservationDiscrete<HmmSequence.Packet>>();
-//            
-                       
-
-        for (int j = 0; j < doubleList.size(); j++) {
-            
-              doubleList.add(learntHmm.probability(testSequence.get(j)));
-        }
+//
+            // doubleList.add(learntHmm.probability(testSequence.get(line)));
+//            doubleList.add(learntHmm.probability(testSequence.get(line)));
+//              System.out.println(learntHmm.probability(testSequence.get(line)));
+            // for (int j = 0; j < testSequence.size(); j++) {
+            //doubleList.add(learntHmm.probability(testSequence.get(j)));
+            //}
          
             
     }
-            
+//        for(int line=0; line<baseSeq.size();line++)
+//        { System.out.println(hmm.probability(testSequence.get(line)));}
+//            
 return doubleList;
     
 }
