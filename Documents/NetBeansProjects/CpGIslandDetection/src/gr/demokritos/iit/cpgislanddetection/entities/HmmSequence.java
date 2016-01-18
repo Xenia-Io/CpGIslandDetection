@@ -27,7 +27,7 @@ public class HmmSequence implements IGenomicSequence{
     
     public static enum Packet {
 
-        A, T, C, G;
+       Other, A, T, C, G;
 
         public ObservationDiscrete<Packet> observation() {
             return new ObservationDiscrete<Packet>(this);

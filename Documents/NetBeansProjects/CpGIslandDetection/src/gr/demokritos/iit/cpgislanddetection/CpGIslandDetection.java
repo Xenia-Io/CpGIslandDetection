@@ -22,6 +22,7 @@ import gr.demokritos.iit.cpgislanddetection.entities.BaseSequence;
 import gr.demokritos.iit.cpgislanddetection.entities.HmmSequence;
 import gr.demokritos.iit.cpgislanddetection.io.ARSSFileReader;
 import gr.demokritos.iit.cpgislanddetection.io.IGenomicSequenceFileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class CpGIslandDetection {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         //String sFileName = args[0];
         
         // Read training file
@@ -78,18 +79,21 @@ public class CpGIslandDetection {
         //System.out.println(str);
         List<Double> doubleList = new ArrayList<Double>();
         HmmClassifier hmmC = new HmmClassifier();
-        doubleList = hmmC.computePositiveProbability(lSeqs);
-        int count=0;
-        for(Double d:doubleList){
-        count++;
-            //System.out.println(count);
-        System.err.println(count+":"+d+"");
-        }
+        doubleList = hmmC.computeProbability(lSeqs);
+//        int count=0;
+//        for(Double b:doubleList){
+//        
+//            count++;
+//            System.out.println(count+":"+b+"");
+//        }
+      
         
+        
+//        
 //        HmmAnalyzer h = new HmmAnalyzer();
 //        List<List<ObservationDiscrete<HmmSequence.Packet>>> p = h.analyze(lSeqs);
 //        int count=0;
-//        for(ObservationDiscrete k:p){
+//        for(List<ObservationDiscrete<HmmSequence.Packet>> k:p){
 //        
 //            count++;
 //            System.out.println(count+":"+k+"");

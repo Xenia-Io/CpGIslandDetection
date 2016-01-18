@@ -33,6 +33,7 @@ public class HmmAnalyzer implements ISequenceAnalyst<List<List<ObservationDiscre
         mMap.put('T',Packet.T.observation());
         mMap.put('C',Packet.C.observation());
         
+        
         //System.out.println(baseSeq);
         // For each sequence
         for (BaseSequence bsCur : baseSeq) {
@@ -40,8 +41,13 @@ public class HmmAnalyzer implements ISequenceAnalyst<List<List<ObservationDiscre
            
             // For each character
             for (Character c: bsCur.getSymbolSequence().toCharArray()) {
-                testSeq.add(mMap.get(c));
-               
+                
+                if (mMap.get(c) == null) {
+                    testSeq.add(Packet.Other.observation());
+                } else {
+                    testSeq.add(mMap.get(c));
+                }
+
             }
             
             // Output observation list
