@@ -79,7 +79,7 @@ public class CpGIslandDetection {
         //System.out.println(str);
         List<Double> doubleList = new ArrayList<Double>();
         HmmClassifier hmmC = new HmmClassifier();
-        doubleList = hmmC.computeProbability(lSeqs);
+//      doubleList = hmmC.computeProbability(lSeqs);
 //        int count=0;
 //        for(Double b:doubleList){
 //        
@@ -90,14 +90,15 @@ public class CpGIslandDetection {
         
         
 //        
-//        HmmAnalyzer h = new HmmAnalyzer();
-//        List<List<ObservationDiscrete<HmmSequence.Packet>>> p = h.analyze(lSeqs);
-//        int count=0;
-//        for(List<ObservationDiscrete<HmmSequence.Packet>> k:p){
-//        
-//            count++;
-//            System.out.println(count+":"+k+"");
-//        }
+        HmmAnalyzer h = new HmmAnalyzer();
+        List<List<ObservationDiscrete<HmmSequence.Packet>>> p = h.analyze(lSeqs);
+        //int count=0;
+        for(List<ObservationDiscrete<HmmSequence.Packet>> k:p){
+        
+            //count++;
+            System.out.println(k);
+            //System.out.println(count+":"+k+"");
+        }
          
     }
     

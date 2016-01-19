@@ -15,12 +15,22 @@ import be.ac.ulg.montefiore.run.jahmm.toolbox.KullbackLeiblerDistanceCalculator;
 import be.ac.ulg.montefiore.run.jahmm.toolbox.MarkovGenerator;
 import gr.demokritos.iit.cpgislanddetection.entities.BaseSequence;
 import gr.demokritos.iit.cpgislanddetection.entities.HmmSequence;
+import gr.demokritos.iit.cpgislanddetection.io.ARSSFileReader;
+import gr.demokritos.iit.cpgislanddetection.io.IGenomicSequenceFileReader;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -34,183 +44,49 @@ public class HmmClassifier implements ISequenceClassifier<List<List<ObservationD
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+     // train: ayta ta seq pane se ayto to label :1)train hmm 2) save th antistoixish
     @Override
     public void train(List<List<ObservationDiscrete<HmmSequence.Packet>>> representation, String sLabel) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       
+        /* Baum-Welch learning */
+  
+        BaumWelchLearner bwl = new BaumWelchLearner();
+
+        Hmm<ObservationDiscrete<HmmSequence.Packet>> myHmm = buildInitHmm();
+
+        // Learn HMM
+        myHmm = bwl.learn(myHmm, representation);
+        
+        //map of dataset files
+        IGenomicSequenceFileReader reader = new ARSSFileReader();
+        Map<String, URL> trainingFiles = new HashMap<>();
+        trainingFiles.put("No Cpg Island", HmmClassifier.class.getResource("C:\\Users\\Xenia\\Desktop\\negSamples.txt"));
+        trainingFiles.put("Cpg Island", HmmClassifier.class.getResource("C:\\Users\\Xenia\\Desktop\\posSamples.txt"));
+
+        //loading examples in memory
+        Map<String, String[]> trainingExamples = new HashMap<>();
+        for(Map.Entry<String, URL> entry : trainingFiles.entrySet()) {
+            
+            try {
+                trainingExamples.put(entry.getKey(), readLines(entry.getValue()));
+            } catch (IOException ex) {
+                Logger.getLogger(HmmClassifier.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     
-    public static List<Double> computeProbability(ArrayList<BaseSequence> baseSeq) throws IOException {
+    
+    public static List<List<ObservationDiscrete<HmmSequence.Packet>>> createRepresentation(ArrayList<BaseSequence> baseSeq) throws IOException {
 
-        List<Double> doubleList = new ArrayList<Double>();
-        List<List<ObservationDiscrete<HmmSequence.Packet>>> testSequence = new ArrayList<>();;
+        List<List<ObservationDiscrete<HmmSequence.Packet>>> testSequences = new ArrayList<>();;
        
         //create the appropriate representation for my stringl-list from a file
         HmmAnalyzer h = new HmmAnalyzer();
-        testSequence = h.analyze(baseSeq);
+        testSequences = h.analyze(baseSeq);
         
-        /* Baum-Welch learning */
-		
-		BaumWelchLearner bwl = new BaumWelchLearner();
-		
-		Hmm<ObservationDiscrete<HmmSequence.Packet>> myHmm = buildInitHmm();
-                
-                // Incrementally improve the solution
-//		for (int i = 0; i < baseSeq.size(); i++) {
-//                    
-//                    mySequence.add( buildSequence(i,baseSeq) );
-//                    
-//			
-//		}
-                
-                for (int i = 0; i < baseSeq.size(); i++) {
-			
-                    myHmm = bwl.learn(myHmm, testSequence);
-                    myHmm = bwl.iterate(myHmm, testSequence);
-                    System.out.println(myHmm);
-			doubleList.add(myHmm.probability(testSequence.get(i)));
-		}
-                
-//                 for (int i = 0; i < baseSeq.size(); i++) {
-//			
-//			System.out.println("Sequence probability: " +
-//				myHmm.probability(mySequence.get(i)));
-//		}
-                
-		
-        
-        return doubleList;
+        return testSequences;
     }
-    
-    
-    
-//    public static List<Double> computePositiveProbability(ArrayList<BaseSequence> baseSeq){
-//    
-//        double arrayForCounting[][] = new double[baseSeq.size()][4];
-//        int countAden = 0, countCyt = 0, countThym = 0, countGouan = 0;
-//        double[] mean = new double[baseSeq.size()];
-//        double[] Var = new double[baseSeq.size()];
-//        double[] aden = new double[baseSeq.size()];
-//        double[] thym = new double[baseSeq.size()];
-//        double[] cyt = new double[baseSeq.size()];
-//        double[] gouan = new double[baseSeq.size()];
-//        
-//        List<Double> doubleList = new ArrayList<Double>();
-//        List<List<ObservationDiscrete<HmmSequence.Packet>>> testSequence;
-//        Hmm<ObservationDiscrete<HmmSequence.Packet>> learntHmm = buildInitHmm();;
-//        Hmm<ObservationDiscrete<HmmSequence.Packet>> hmm=null;
-//        
-//        /* Baum-Welch learning */
-//        BaumWelchLearner bwl = new BaumWelchLearner();
-//        
-//        //create the appropriate representation for my stringl-list from a file
-//        HmmAnalyzer h = new HmmAnalyzer();
-//        testSequence = h.analyze(baseSeq);
-//        //System.out.println(testSequence);
-//        //gia to ka8e stoixeio ths listas vriskw to plithos twn A,T,C,G kai ta apo8hkeuw se enan pinaka
-//        for (int line = 0; line < baseSeq.size(); line++) {
-//
-//            countAden = 0;
-//            countCyt = 0;
-//            countGouan = 0;
-//            countThym = 0;
-//
-//            for (int i = 0; i < baseSeq.get(line).getSymbolSequence().length(); i++) {
-//
-//                if (baseSeq.get(line).myCharAt(i,baseSeq.get(line).getSymbolSequence()) == 'A') {
-//
-//                    countAden++;
-//                    arrayForCounting[line][0] = countAden;
-//
-//                } else if (baseSeq.get(line).myCharAt(i,baseSeq.get(line).getSymbolSequence()) == 'T') {
-//
-//                    countThym++;
-//                    arrayForCounting[line][1] = countThym;
-//
-//                } else if (baseSeq.get(line).myCharAt(i,baseSeq.get(line).getSymbolSequence()) == 'C') {
-//
-//                    countCyt++;
-//                    arrayForCounting[line][2] = countCyt;
-//
-//                } else if (baseSeq.get(line).myCharAt(i,baseSeq.get(line).getSymbolSequence()) == 'G') {
-//
-//                    countGouan++;
-//                    arrayForCounting[line][3] = countGouan;
-//
-//                }
-//
-//            }
-//         
-//            //compute emission probabilities
-//            aden[line] = (arrayForCounting[line][0] / (arrayForCounting[line][0] + arrayForCounting[line][1] + arrayForCounting[line][2] + arrayForCounting[line][3]));
-//            thym[line] = (arrayForCounting[line][1] / (arrayForCounting[line][0] + arrayForCounting[line][1] + arrayForCounting[line][2] + arrayForCounting[line][3]));
-//            cyt[line] = (arrayForCounting[line][2] / (arrayForCounting[line][0] + arrayForCounting[line][1] + arrayForCounting[line][2] + arrayForCounting[line][3]));
-//            gouan[line] = (arrayForCounting[line][3] / (arrayForCounting[line][0] + arrayForCounting[line][1] + arrayForCounting[line][2] + arrayForCounting[line][3]));
-//
-//            //build learntHmm and hmm for each sequence
-//            
-//            hmm = buildHmm(aden[line], thym[line], cyt[line], gouan[line]);
-//            //System.out.println(learntHmm);
-//            //System.out.println(hmm);
-//            
-//            System.out.println(testSequence.get(line));
-//            
-//            List<ObservationDiscrete<HmmSequence.Packet>> a = testSequence.get(line);
-//            if(a==null)
-//            {
-//                System.out.println("Null ignoring !!!");
-//            
-//
-//            }else
-//            {
-//                try{
-//                     hmm.probability(a);
-//                }catch(NullPointerException e){
-//                 
-//                     System.err.println("Could not calculate probability of a:");
-//                     System.err.println(a.toString());
-//                }
-//                
-//                
-//            }
-//           
-//            // doubleList.add(learntHmm.probability(testSequence.get(line)));
-////            doubleList.add(learntHmm.probability(testSequence.get(line)));
-////              System.out.println(learntHmm.probability(testSequence.get(line)));
-//            // for (int j = 0; j < testSequence.size(); j++) {
-//            //doubleList.add(learntHmm.probability(testSequence.get(j)));
-//            //}
-//         
-//            
-//    }          
-//return doubleList;
-//    
-//}
-    
-    static Hmm<ObservationDiscrete<HmmSequence.Packet>> buildHmm(double a, double t, double c, double g) {
-
-        Hmm<ObservationDiscrete<HmmSequence.Packet>> hmm
-                = new Hmm<ObservationDiscrete<HmmSequence.Packet>>(2,
-                        new OpdfDiscreteFactory<HmmSequence.Packet>(HmmSequence.Packet.class));
-
-        //initial probabilities
-        //we give in the 2nd class bigger probability as we implements a model that fits with CpG islands
-        hmm.setPi(0, 0.05);
-        hmm.setPi(1, 0.95);
-
-        //emissions probabilities
-        hmm.setOpdf(0, new OpdfDiscrete<HmmSequence.Packet>(HmmSequence.Packet.class,
-                new double[]{0.25, 0.25, 0.25, 0.25}));
-        hmm.setOpdf(1, new OpdfDiscrete<HmmSequence.Packet>(HmmSequence.Packet.class,
-                new double[]{a, t, c, g}));
-
-        //transitions between the 2 classes - we give bigger probability for "CpG state"
-        hmm.setAij(0, 1, 1);
-        hmm.setAij(0, 0, 0);
-        hmm.setAij(1, 0, 0);
-        hmm.setAij(1, 1, 1);
-
-        return hmm;
-    }
+   
 
     /* Initial guess for the Baum-Welch algorithm */
     static Hmm<ObservationDiscrete<HmmSequence.Packet>> buildInitHmm() {
@@ -233,19 +109,19 @@ public class HmmClassifier implements ISequenceClassifier<List<List<ObservationD
         hmm.setAij(1, 1, 0.25);
 
         return hmm;
-    }
+    } 
 
-    /* Generate several observation sequences using a HMM */
-    static <O extends Observation> List<List<O>>
-            generateSequences(Hmm<O> hmm) {
-        MarkovGenerator<O> mg = new MarkovGenerator<O>(hmm);
-
-        List<List<O>> sequences = new ArrayList<List<O>>();
-        for (int i = 0; i < 200; i++) {
-            sequences.add(mg.observationSequence(100));
+    private String[] readLines(URL value) throws IOException {
+        Reader fileReader = new InputStreamReader(value.openStream(), Charset.forName("UTF-8"));
+        List<String> lines;
+        try (BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+            lines = new ArrayList<>();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                lines.add(line);
+            }
         }
-
-        return sequences;
+        return lines.toArray(new String[lines.size()]);
     }
 
 }
