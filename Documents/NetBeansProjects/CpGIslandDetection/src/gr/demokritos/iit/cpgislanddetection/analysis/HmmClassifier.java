@@ -13,6 +13,7 @@ import be.ac.ulg.montefiore.run.jahmm.OpdfDiscreteFactory;
 import be.ac.ulg.montefiore.run.jahmm.learn.BaumWelchLearner;
 import be.ac.ulg.montefiore.run.jahmm.toolbox.KullbackLeiblerDistanceCalculator;
 import be.ac.ulg.montefiore.run.jahmm.toolbox.MarkovGenerator;
+import static com.sun.xml.internal.ws.streaming.XMLStreamReaderUtil.close;
 import gr.demokritos.iit.cpgislanddetection.entities.BaseSequence;
 import gr.demokritos.iit.cpgislanddetection.entities.HmmSequence;
 import gr.demokritos.iit.cpgislanddetection.io.ARSSFileReader;
@@ -57,20 +58,17 @@ public class HmmClassifier implements ISequenceClassifier<List<List<ObservationD
 
         Hmm<ObservationDiscrete<HmmSequence.Packet>> myHmm = buildInitHmm();
 
-        
-        // Read  file
+        //Read files with positive and negative samples
         IGenomicSequenceFileReader readerPos = new ARSSFileReader();
         IGenomicSequenceFileReader readerNeg = new ARSSFileReader();
         
-        
         ArrayList<BaseSequence> posBaseSeq = readerPos.getSequencesFromFile("C:\\Users\\Xenia\\Desktop\\negSamples.txt");
         ArrayList<BaseSequence> negBaseSeq = readerNeg.getSequencesFromFile("C:\\Users\\Xenia\\Desktop\\negSamples.txt");
-        
-        
+                      
+        //create the appropriate representation for my string-list from a file
         List<List<ObservationDiscrete<HmmSequence.Packet>>> positiveSequences = new ArrayList<>();;
         List<List<ObservationDiscrete<HmmSequence.Packet>>> negativeSequences = new ArrayList<>();;
 
-        //create the appropriate representation for my stringl-list from a file
         HmmAnalyzer hPos = new HmmAnalyzer();
         HmmAnalyzer hNeg = new HmmAnalyzer();
 
@@ -80,20 +78,16 @@ public class HmmClassifier implements ISequenceClassifier<List<List<ObservationD
         try {
             representationPos = hmm.createRepresentation(posBaseSeq);
             representationNeg = hmm.createRepresentation(negBaseSeq);
-            
-            
+
             // Learn HMM
             myHmm = bwl.learn(myHmm, representationPos);
             myHmm = bwl.learn(myHmm, representationNeg);
 
-        
         } catch (IOException ex) {
             Logger.getLogger(HmmClassifier.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        
         //map of dataset files
-        IGenomicSequenceFileReader reader = new ARSSFileReader();
         Map<String, URL> trainingFiles = new HashMap<>();
         trainingFiles.put("No Cpg Island", HmmClassifier.class.getResource("C:\\Users\\Xenia\\Desktop\\negSamples.txt"));
         trainingFiles.put("Cpg Island", HmmClassifier.class.getResource("C:\\Users\\Xenia\\Desktop\\posSamples.txt"));
