@@ -18,11 +18,15 @@ package gr.demokritos.iit.cpgislanddetection;
 import be.ac.ulg.montefiore.run.jahmm.ObservationDiscrete;
 import gr.demokritos.iit.cpgislanddetection.analysis.HmmAnalyzer;
 import gr.demokritos.iit.cpgislanddetection.analysis.HmmClassifier;
+import gr.demokritos.iit.cpgislanddetection.analysis.ISequenceAnalyst;
+import gr.demokritos.iit.cpgislanddetection.analysis.ISequenceClassifier;
 import gr.demokritos.iit.cpgislanddetection.entities.BaseSequence;
 import gr.demokritos.iit.cpgislanddetection.entities.HmmSequence;
 import gr.demokritos.iit.cpgislanddetection.io.ARSSFileReader;
 import gr.demokritos.iit.cpgislanddetection.io.IGenomicSequenceFileReader;
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,70 +40,57 @@ public class CpGIslandDetection {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-        //String sFileName = args[0];
-        
+
+        String sFileNameArgs = args[0];
+
+        String[] fileNames = null;
         // Read  file
         IGenomicSequenceFileReader reader = new ARSSFileReader();
         ArrayList<BaseSequence> lSeqs;
         // If no input file has been given
-        if (args.length == 0) 
+        if (args.length == 0) {
             // Use default
-            lSeqs = reader.getSequencesFromFile("C:\\Users\\Xenia\\Desktop\\negSamples.txt");
-        else
-            // else use the provided one
-            lSeqs = reader.getSequencesFromFile(args[0]);
-        
-//        int counter =0;
-//        for (BaseSequence elem : lSeqs) {
-//            counter++;
-//            System.out.println(counter+":"+elem + "  ");
-//            
-//        }
-        
-        // Initialize sequence detector
-        //ICpGSequenceDetector detector = new VectorSequenceDetector(lSeqs, null);
-        // Read test file
-        // For every test instance
-            // Get result
-            // Count successes and failures
-        
-        // Output results
-//        
-//        VectorAnalyzer v = new VectorAnalyzer();
-//        
-//        Vector<Vector<Integer>> myVec = v.analyze(lSeqs);
-//        int count=0;
-//        for(Vector vec: myVec){
-//        count++;
-//            System.out.println(count+":"+vec+" ");
-//        }
-        
-        HmmSequence hmm = new HmmSequence();
-        String str = hmm.getSymbolSequence();
-        //System.out.println(str);
-        List<Double> doubleList = new ArrayList<Double>();
-        HmmClassifier hmmC = new HmmClassifier();
-//      doubleList = hmmC.computeProbability(lSeqs);
-//        int count=0;
-//        for(Double b:doubleList){
-//        
-//            count++;
-//            System.out.println(count+":"+b+"");
-//        }
-      
-        
-        
-//        
-        HmmAnalyzer h = new HmmAnalyzer();
-        List<List<ObservationDiscrete<HmmSequence.Packet>>> p = h.analyze(lSeqs);
-        //int count=0;
-        for(List<ObservationDiscrete<HmmSequence.Packet>> k:p){
-        
-            //count++;
-            System.out.println(k);
-            //System.out.println(count+":"+k+"");
+            fileNames[0] = "C:\\Users\\Xenia\\Desktop\\posSamples.txt";
+            fileNames[1] = "C:\\Users\\Xenia\\Desktop\\negSamples.txt";
+        } else // else use the provided one
+        {
+            fileNames = sFileNameArgs.split(";");
         }
-         
+
+        
+        // Init classifier
+          ISequenceClassifier<List<ObservationDiscrete<HmmSequence.Packet>>> classifier
+                  = new HmmClassifier();
+
+        //for each file do the same work: train
+        for (int i = 0; i < fileNames.length; i++) {
+            // Read the sequences
+            lSeqs = reader.getSequencesFromFile(fileNames[i]);
+
+            // Create HMM sequences
+            ISequenceAnalyst<List<ObservationDiscrete<HmmSequence.Packet>>> analyst
+                    = new HmmAnalyzer();
+            List<List<ObservationDiscrete<HmmSequence.Packet>>> lHmmSeqs = analyst.analyze(lSeqs);
+
+            // Train classifier with the observations
+             classifier.train(lHmmSeqs, new File(fileNames[i]).getName());
+        }
+        
+        //Classify the test file
+      
+        // Read the sequences
+        lSeqs = reader.getSequencesFromFile(fileNames[fileNames.length-1]);
+
+        // Create HMM sequences
+        ISequenceAnalyst<List<ObservationDiscrete<HmmSequence.Packet>>> analyst
+                = new HmmAnalyzer();
+        List<List<ObservationDiscrete<HmmSequence.Packet>>> lHmmSeqs = analyst.analyze(lSeqs);
+
+        String str = null;
+        
+        for (int i = 0; i < lHmmSeqs.size(); i++) {
+            str = classifier.classify(lHmmSeqs.get(i));
+            System.out.println(str);
+        }
     }
-    
 }

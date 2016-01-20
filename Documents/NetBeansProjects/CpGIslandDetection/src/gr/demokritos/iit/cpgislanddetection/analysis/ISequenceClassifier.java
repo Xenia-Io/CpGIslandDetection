@@ -15,11 +15,13 @@
  */
 package gr.demokritos.iit.cpgislanddetection.analysis;
 
+import java.util.List;
+
 /**
  *
  * @author Xenia
  */
 public interface ISequenceClassifier<T> {
     public String classify(T representation);
-    public void train(T representation, String sLabel);
+    public void train(List<T> representation, String sLabel);
 }

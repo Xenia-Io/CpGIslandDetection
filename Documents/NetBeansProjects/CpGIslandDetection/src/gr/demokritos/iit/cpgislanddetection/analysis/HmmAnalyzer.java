@@ -19,10 +19,10 @@ import gr.demokritos.iit.cpgislanddetection.entities.HmmSequence.Packet;
  *
  * @author Xenia
  */
-public class HmmAnalyzer implements ISequenceAnalyst<List<List<ObservationDiscrete<Packet>>>> {
+public class HmmAnalyzer implements ISequenceAnalyst<List<ObservationDiscrete<Packet>>> {
 
     @Override
-    public List<List<ObservationDiscrete<Packet>>> analyze(ArrayList<BaseSequence> baseSeq) {
+    public List<List<ObservationDiscrete<Packet>>> analyze(List<BaseSequence> baseSeq) {
 
         List<List<ObservationDiscrete<Packet>>> lRes = new ArrayList<>();
                 

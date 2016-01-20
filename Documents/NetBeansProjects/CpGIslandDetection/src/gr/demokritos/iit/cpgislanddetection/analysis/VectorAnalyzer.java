@@ -16,21 +16,15 @@
 package gr.demokritos.iit.cpgislanddetection.analysis;
 
 import gr.demokritos.iit.cpgislanddetection.entities.BaseSequence;
-import gr.demokritos.iit.cpgislanddetection.entities.IGenomicSequence;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Create vectors from ArrayList<BaseSequence> alRes
  *
  * @author Xenia
  */
-public class VectorAnalyzer implements ISequenceAnalyst<Vector<Vector<Integer>>> {
+public class VectorAnalyzer implements ISequenceAnalyst<Vector<Integer>> {
 
     /**
      *
@@ -38,7 +32,7 @@ public class VectorAnalyzer implements ISequenceAnalyst<Vector<Vector<Integer>>>
      * @return
      */
     @Override
-    public Vector<Vector<Integer>> analyze(ArrayList<BaseSequence> baseSeq) {
+    public List<Vector<Integer>> analyze(List<BaseSequence> baseSeq) {
 
         int countAden, countThym, countGouan, countCyt;
         int arrayForCounting[][] = new int[baseSeq.size()][4];

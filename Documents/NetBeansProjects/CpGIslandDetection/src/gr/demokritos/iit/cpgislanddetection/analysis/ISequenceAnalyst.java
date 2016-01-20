@@ -16,8 +16,7 @@
 package gr.demokritos.iit.cpgislanddetection.analysis;
 
 import gr.demokritos.iit.cpgislanddetection.entities.BaseSequence;
-import gr.demokritos.iit.cpgislanddetection.entities.IGenomicSequence;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This interface describes all classes that can take a sequence as an input
@@ -25,5 +24,5 @@ import java.util.ArrayList;
  * @author Xenia
  */
 public interface ISequenceAnalyst<T> {
-    public T analyze(ArrayList<BaseSequence> gsSeq);
+    public List<T> analyze(List<BaseSequence> gsSeq);
 }

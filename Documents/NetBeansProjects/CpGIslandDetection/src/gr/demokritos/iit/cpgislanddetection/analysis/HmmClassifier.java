@@ -37,72 +37,43 @@ import java.util.logging.Logger;
  *
  * @author Xenia
  */
-public class HmmClassifier implements ISequenceClassifier<List<List<ObservationDiscrete<HmmSequence.Packet>>>>{
+public class HmmClassifier implements ISequenceClassifier<List<ObservationDiscrete<HmmSequence.Packet>>>{
 
+    protected Map<String,Hmm> classModel = new HashMap<>();
+    
     
     @Override
-    public String classify(List<List<ObservationDiscrete<HmmSequence.Packet>>> representation) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String classify(List<ObservationDiscrete<HmmSequence.Packet>> representation) {
+        //For every class
+        double dMaxProb = 0.0;
+        String sResult = null;
+        
+        for (String sClassName : classModel.keySet()) {            
+            //Get the model
+            Hmm hTempModel = classModel.get(sClassName);            
+            //Get the probability of the representation given the model
+            double dProb = hTempModel.probability(representation);
+            //Select the model with the highest probability
+            if (dProb > dMaxProb) {
+                dMaxProb = dProb;
+                sResult = sClassName;
+            }
+        }
+        // Return the class
+       // System.out.println(sResult);
+        return sResult;
     }
 
      // train: ayta ta seq pane se ayto to label :1)train hmm 2) save th antistoixish
     @Override
     public void train(List<List<ObservationDiscrete<HmmSequence.Packet>>> representation, String sLabel) {
-       
-        HmmClassifier hmm = new HmmClassifier();
-        List<List<ObservationDiscrete<HmmSequence.Packet>>> representationPos;
-        List<List<ObservationDiscrete<HmmSequence.Packet>>> representationNeg;
-        /* Baum-Welch learning */
-  
+        // Create a temporary HMM model
+        Hmm hmmTmp = buildInitHmm();
+        // Train the model based on the observations
         BaumWelchLearner bwl = new BaumWelchLearner();
-
-        Hmm<ObservationDiscrete<HmmSequence.Packet>> myHmm = buildInitHmm();
-
-        //Read files with positive and negative samples
-        IGenomicSequenceFileReader readerPos = new ARSSFileReader();
-        IGenomicSequenceFileReader readerNeg = new ARSSFileReader();
-        
-        ArrayList<BaseSequence> posBaseSeq = readerPos.getSequencesFromFile("C:\\Users\\Xenia\\Desktop\\negSamples.txt");
-        ArrayList<BaseSequence> negBaseSeq = readerNeg.getSequencesFromFile("C:\\Users\\Xenia\\Desktop\\negSamples.txt");
-                      
-        //create the appropriate representation for my string-list from a file
-        List<List<ObservationDiscrete<HmmSequence.Packet>>> positiveSequences = new ArrayList<>();;
-        List<List<ObservationDiscrete<HmmSequence.Packet>>> negativeSequences = new ArrayList<>();;
-
-        HmmAnalyzer hPos = new HmmAnalyzer();
-        HmmAnalyzer hNeg = new HmmAnalyzer();
-
-        positiveSequences = hPos.analyze(posBaseSeq);
-        negativeSequences = hNeg.analyze(negBaseSeq);
-       
-        try {
-            representationPos = hmm.createRepresentation(posBaseSeq);
-            representationNeg = hmm.createRepresentation(negBaseSeq);
-
-            // Learn HMM
-            myHmm = bwl.learn(myHmm, representationPos);
-            myHmm = bwl.learn(myHmm, representationNeg);
-
-        } catch (IOException ex) {
-            Logger.getLogger(HmmClassifier.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        //map of dataset files
-        Map<String, URL> trainingFiles = new HashMap<>();
-        trainingFiles.put("No Cpg Island", HmmClassifier.class.getResource("C:\\Users\\Xenia\\Desktop\\negSamples.txt"));
-        trainingFiles.put("Cpg Island", HmmClassifier.class.getResource("C:\\Users\\Xenia\\Desktop\\posSamples.txt"));
-
-        //loading in memory
-        Map<String, String[]> trainingExamples = new HashMap<>();
-        for(Map.Entry<String, URL> entry : trainingFiles.entrySet()) {
-            
-            try {
-                trainingExamples.put(entry.getKey(), readLines(entry.getValue()));
-            } catch (IOException ex) {
-                Logger.getLogger(HmmClassifier.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        
+        //hmmTmp = bwl.learn(hmmTmp, representation);
+        // Store the model in the classModel map
+        classModel.put(sLabel, hmmTmp);
     }
     
     
