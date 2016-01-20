@@ -48,14 +48,49 @@ public class HmmClassifier implements ISequenceClassifier<List<List<ObservationD
     @Override
     public void train(List<List<ObservationDiscrete<HmmSequence.Packet>>> representation, String sLabel) {
        
+        HmmClassifier hmm = new HmmClassifier();
+        List<List<ObservationDiscrete<HmmSequence.Packet>>> representationPos;
+        List<List<ObservationDiscrete<HmmSequence.Packet>>> representationNeg;
         /* Baum-Welch learning */
   
         BaumWelchLearner bwl = new BaumWelchLearner();
 
         Hmm<ObservationDiscrete<HmmSequence.Packet>> myHmm = buildInitHmm();
 
-        // Learn HMM
-        myHmm = bwl.learn(myHmm, representation);
+        
+        // Read  file
+        IGenomicSequenceFileReader readerPos = new ARSSFileReader();
+        IGenomicSequenceFileReader readerNeg = new ARSSFileReader();
+        
+        
+        ArrayList<BaseSequence> posBaseSeq = readerPos.getSequencesFromFile("C:\\Users\\Xenia\\Desktop\\negSamples.txt");
+        ArrayList<BaseSequence> negBaseSeq = readerNeg.getSequencesFromFile("C:\\Users\\Xenia\\Desktop\\negSamples.txt");
+        
+        
+        List<List<ObservationDiscrete<HmmSequence.Packet>>> positiveSequences = new ArrayList<>();;
+        List<List<ObservationDiscrete<HmmSequence.Packet>>> negativeSequences = new ArrayList<>();;
+
+        //create the appropriate representation for my stringl-list from a file
+        HmmAnalyzer hPos = new HmmAnalyzer();
+        HmmAnalyzer hNeg = new HmmAnalyzer();
+
+        positiveSequences = hPos.analyze(posBaseSeq);
+        negativeSequences = hNeg.analyze(negBaseSeq);
+       
+        try {
+            representationPos = hmm.createRepresentation(posBaseSeq);
+            representationNeg = hmm.createRepresentation(negBaseSeq);
+            
+            
+            // Learn HMM
+            myHmm = bwl.learn(myHmm, representationPos);
+            myHmm = bwl.learn(myHmm, representationNeg);
+
+        
+        } catch (IOException ex) {
+            Logger.getLogger(HmmClassifier.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         
         //map of dataset files
         IGenomicSequenceFileReader reader = new ARSSFileReader();
@@ -63,7 +98,7 @@ public class HmmClassifier implements ISequenceClassifier<List<List<ObservationD
         trainingFiles.put("No Cpg Island", HmmClassifier.class.getResource("C:\\Users\\Xenia\\Desktop\\negSamples.txt"));
         trainingFiles.put("Cpg Island", HmmClassifier.class.getResource("C:\\Users\\Xenia\\Desktop\\posSamples.txt"));
 
-        //loading examples in memory
+        //loading in memory
         Map<String, String[]> trainingExamples = new HashMap<>();
         for(Map.Entry<String, URL> entry : trainingFiles.entrySet()) {
             
@@ -73,6 +108,7 @@ public class HmmClassifier implements ISequenceClassifier<List<List<ObservationD
                 Logger.getLogger(HmmClassifier.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
     }
     
     

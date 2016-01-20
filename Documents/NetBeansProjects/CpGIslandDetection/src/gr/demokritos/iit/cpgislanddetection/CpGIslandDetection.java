@@ -38,7 +38,7 @@ public class CpGIslandDetection {
     public static void main(String[] args) throws IOException {
         //String sFileName = args[0];
         
-        // Read training file
+        // Read  file
         IGenomicSequenceFileReader reader = new ARSSFileReader();
         ArrayList<BaseSequence> lSeqs;
         // If no input file has been given
