@@ -40,7 +40,12 @@ import java.util.logging.Logger;
 public class HmmClassifier implements ISequenceClassifier<List<ObservationDiscrete<HmmSequence.Packet>>>{
 
     protected Map<String,Hmm> classModel = new HashMap<>();
-    
+ 
+    @Override
+    public Map<String, Hmm> getClassModel() {
+        return classModel;
+    }
+
     
     @Override
     public String classify(List<ObservationDiscrete<HmmSequence.Packet>> representation) {
@@ -48,19 +53,23 @@ public class HmmClassifier implements ISequenceClassifier<List<ObservationDiscre
         double dMaxProb = 0.0;
         String sResult = null;
         
-        for (String sClassName : classModel.keySet()) {            
+        for (String sClassName : classModel.keySet()) { 
+            //System.out.println(classModel.keySet());
+            //System.out.println(classModel.containsKey(this));
+            
             //Get the model
-            Hmm hTempModel = classModel.get(sClassName);            
+            Hmm hTempModel = classModel.get(sClassName);  
             //Get the probability of the representation given the model
             double dProb = hTempModel.probability(representation);
             //Select the model with the highest probability
             if (dProb > dMaxProb) {
                 dMaxProb = dProb;
                 sResult = sClassName;
+                
+                //System.out.println(sResult);
             }
         }
-        // Return the class
-       // System.out.println(sResult);
+        // Return the class 
         return sResult;
     }
 

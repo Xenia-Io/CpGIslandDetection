@@ -15,7 +15,9 @@
  */
 package gr.demokritos.iit.cpgislanddetection.analysis;
 
+import be.ac.ulg.montefiore.run.jahmm.Hmm;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -24,4 +26,7 @@ import java.util.List;
 public interface ISequenceClassifier<T> {
     public String classify(T representation);
     public void train(List<T> representation, String sLabel);
+
+    public Object getClassModel();
+
 }

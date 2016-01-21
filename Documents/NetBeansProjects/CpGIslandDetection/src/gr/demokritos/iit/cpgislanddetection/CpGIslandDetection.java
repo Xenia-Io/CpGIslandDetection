@@ -52,19 +52,20 @@ public class CpGIslandDetection {
             // Use default
             fileNames[0] = "C:\\Users\\Xenia\\Desktop\\posSamples.txt";
             fileNames[1] = "C:\\Users\\Xenia\\Desktop\\negSamples.txt";
+            fileNames[2] = "C:\\Users\\Xenia\\Desktop\\newsamples.txt";
+
         } else // else use the provided one
         {
             fileNames = sFileNameArgs.split(";");
         }
-
-        
         // Init classifier
           ISequenceClassifier<List<ObservationDiscrete<HmmSequence.Packet>>> classifier
                   = new HmmClassifier();
-
+        
         //for each file do the same work: train
-        for (int i = 0; i < fileNames.length; i++) {
+        for (int i = 0; i < 3; i++) {
             // Read the sequences
+            
             lSeqs = reader.getSequencesFromFile(fileNames[i]);
 
             // Create HMM sequences
@@ -76,21 +77,33 @@ public class CpGIslandDetection {
              classifier.train(lHmmSeqs, new File(fileNames[i]).getName());
         }
         
-        //Classify the test file
-      
-        // Read the sequences
-        lSeqs = reader.getSequencesFromFile(fileNames[fileNames.length-1]);
-
-        // Create HMM sequences
+        //Classify the test file        
+        //First: Read the sequences
+        lSeqs = reader.getSequencesFromFile(fileNames[1]);
+        //Then: Create HMM sequences
         ISequenceAnalyst<List<ObservationDiscrete<HmmSequence.Packet>>> analyst
                 = new HmmAnalyzer();
         List<List<ObservationDiscrete<HmmSequence.Packet>>> lHmmSeqs = analyst.analyze(lSeqs);
-
+        
         String str = null;
+        String[] savedResults = new String[lHmmSeqs.size()];
+        
+        //create a 2x2 array to store successes and failures for each class
+        int[][] matrix = new int[2][2];
         
         for (int i = 0; i < lHmmSeqs.size(); i++) {
             str = classifier.classify(lHmmSeqs.get(i));
             System.out.println(str);
+            savedResults[i] = str;
+            
+            
+            //kalw sunarthsh pou exetazei an to sequence ikanopoiei ta CpG criterias
+            //sugkrinw to apotelesma ayths ths sunarthshs me to str 
+            //kai kanw to apotelesma save ston pinaka
+            
         }
+        
+        //Evaluation: calculation of classification rate and accuracy
+        
     }
 }
