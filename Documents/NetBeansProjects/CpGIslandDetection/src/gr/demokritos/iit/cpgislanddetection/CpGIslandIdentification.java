@@ -16,8 +16,9 @@ import java.util.ArrayList;
  */
 public class CpGIslandIdentification {
 
-    public static boolean identify(String sequence) {
+    public boolean identify(String sequence) {
 
+//        System.out.println("String is------> : "+sequence);
         int numOfC = 0, numOfG = 0, numOfCpG = 0;
         double percentCG = 0;
         int window = 10;
@@ -103,9 +104,9 @@ public class CpGIslandIdentification {
 
         } //end of while
 
-         //System.out.println("score= " + totalScore + " percentCG= " + totalPercentCG);
-        //TODOS: CHECK IF ITS TRUE OR FALSE
-        if (totalScore >= 0.8 && totalPercentCG >= 0.5) {
+        //System.out.println("score= " + totalScore + " percentCG= " + totalPercentCG);
+        //CHECK IF ITS TRUE OR FALSE
+        if (totalScore >= 0.6 && totalPercentCG >= 0.5) {
             result = true;
         } else {
             result = false;
@@ -113,6 +114,7 @@ public class CpGIslandIdentification {
         return result;
     }
 
+    //check when a cytocine is followed by a gouanine
     public static int findCG(String str) {
 
         int i, j = 0;

@@ -16,7 +16,7 @@ import be.ac.ulg.montefiore.run.jahmm.toolbox.MarkovGenerator;
 import static com.sun.xml.internal.ws.streaming.XMLStreamReaderUtil.close;
 import gr.demokritos.iit.cpgislanddetection.entities.BaseSequence;
 import gr.demokritos.iit.cpgislanddetection.entities.HmmSequence;
-import gr.demokritos.iit.cpgislanddetection.io.ARSSFileReader;
+import gr.demokritos.iit.cpgislanddetection.io.SequenceListFileReader;
 import gr.demokritos.iit.cpgislanddetection.io.IGenomicSequenceFileReader;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -50,7 +50,7 @@ public class HmmClassifier implements ISequenceClassifier<List<ObservationDiscre
     @Override
     public String classify(List<ObservationDiscrete<HmmSequence.Packet>> representation) {
         //For every class
-        double dMaxProb = 0.0;
+        double dMaxProb = -1.0;
         String sResult = null;
         
         for (String sClassName : classModel.keySet()) { 
@@ -68,7 +68,14 @@ public class HmmClassifier implements ISequenceClassifier<List<ObservationDiscre
                 
                 //System.out.println(sResult);
             }
+            // DEBUG
+//            else {
+//                System.out.println("Not assigned: :" + dProb);
+//            }
         }
+        
+        if(sResult==null)
+            System.out.println(classModel.keySet().size());
         // Return the class 
         return sResult;
     }

@@ -35,7 +35,9 @@ public class HmmAnalyzer implements ISequenceAnalyst<List<ObservationDiscrete<Pa
         
         //System.out.println(baseSeq);
         // For each sequence
+        System.out.println(baseSeq.size());
         for (BaseSequence bsCur : baseSeq) {
+            
             List<ObservationDiscrete<Packet>> testSeq = new ArrayList<>();
            
             // For each character

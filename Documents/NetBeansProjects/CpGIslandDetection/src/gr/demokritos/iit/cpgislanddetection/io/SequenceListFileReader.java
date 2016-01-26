@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  *
  * @author Xenia
  */
-public class ARSSFileReader implements IGenomicSequenceFileReader {
+public class SequenceListFileReader implements IGenomicSequenceFileReader {
 
     @Override
     public ArrayList<BaseSequence> getSequencesFromFile(String sFileName) {
@@ -57,9 +57,9 @@ public class ARSSFileReader implements IGenomicSequenceFileReader {
                     reader.close();
 
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(ARSSFileReader.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SequenceListFileReader.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(ARSSFileReader.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SequenceListFileReader.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         
