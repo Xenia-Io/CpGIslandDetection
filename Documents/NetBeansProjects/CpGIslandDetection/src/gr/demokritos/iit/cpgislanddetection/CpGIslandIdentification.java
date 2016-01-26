@@ -9,14 +9,15 @@ import be.ac.ulg.montefiore.run.jahmm.ObservationDiscrete;
 import gr.demokritos.iit.cpgislanddetection.entities.HmmSequence;
 import java.util.List;
 import java.util.ArrayList;
+
 /**
  *
  * @author Xenia
  */
 public class CpGIslandIdentification {
-    
-    private static boolean identify(List<ObservationDiscrete<HmmSequence.Packet>> sequence){
-    
+
+    public static boolean identify(String sequence) {
+
         int numOfC = 0, numOfG = 0, numOfCpG = 0;
         double percentCG = 0;
         int window = 10;
@@ -24,95 +25,99 @@ public class CpGIslandIdentification {
         double score = 0;
         int begin = 0;
         double totalScore = 0, totalPercentCG = 0;
-        double totalAdjScore=0;
-        double totalAdjPercentCG=0;
-        
+        double totalAdjScore = 0;
+        double totalAdjPercentCG = 0;
+        boolean result;
+
         // compute the number of C and G inside a window
         int startWindow = 0;
         int endWindow = 199;
         int originalWindow = 200;
-        int rows_counter=0;
+        int rows_counter = 0;
         window = originalWindow;
         ArrayList<Double> percentCGList = new ArrayList<>();
         ArrayList<Double> scoreCGList = new ArrayList<>();
-            
+
         //array where each row is a sub-sequence that satisfies the CpG criteria
-        double arrayForAdjacentCpG[][] = new double[(sequence.size()/window)][4];
+        double arrayForAdjacentCpG[][] = new double[(sequence.length() / window)][4];
         //allocate space for my array - max number of rows are str.length()/window (!!!)
-        for (m = 0; m < (sequence.size()/window); m++) {
+        for (m = 0; m < (sequence.length() / window); m++) {
             for (n = 0; n < 4; n++) {
-                arrayForAdjacentCpG[m] = new double[n];                
+                arrayForAdjacentCpG[m] = new double[n];
             }
         }
-        
+
         numOfCpG = findCG(sequence);
-        System.out.println("In the first test number of CpG= " + numOfCpG);
-        System.out.println("length of str= "+sequence.size());
-        
-        while (startWindow < sequence.size()) {
+//        System.out.println("In the first test number of CpG= " + numOfCpG);
+//        System.out.println("length of str= " + sequence.length());
+
+        while (startWindow < sequence.length()) {
 
             //compute cytosines and gouanines
             numOfC = computeCytosine(startWindow, endWindow, sequence, window);
             //System.out.println("C= "+numOfC);
             numOfG = computeGouanine(startWindow, endWindow, sequence, window);
             //System.out.println("G= "+numOfG);
-            
+
             // compute the criteria of a CpG island inside the first window
-            percentCG = (double) (numOfC + numOfG) / (sequence.size());
+            percentCG = (double) (numOfC + numOfG) / (sequence.length());
 
             if (numOfC > 0 && numOfG > 0) {
-                score = (double) ((numOfCpG * sequence.size()) / (numOfC * numOfG));
+                score = (double) ((numOfCpG * sequence.length()) / (numOfC * numOfG));
 
             }
             //System.out.println("first score= "+score);
             totalPercentCG += percentCG;
             totalScore += score;
-            
+
             percentCGList.add(percentCG);
             scoreCGList.add(score);
-            
+
             //the criteria are satisfied 
             if (percentCG >= 0.5 && score >= 0.6) {
-               
+
                 //insert the subsequence in that array where each row is a sub-sequence that satisfies the CpG criteria
-                for (m = 0; m < (sequence.size() / window); m++) {
+                for (m = 0; m < (sequence.length() / window); m++) {
 
                     arrayForAdjacentCpG[m][0] = startWindow; //1st column where my sub-sequence starts
                     arrayForAdjacentCpG[m][1] = endWindow;   //2nd column where it ends 
                     arrayForAdjacentCpG[m][2] = percentCG;   //3rd column its %GC
                     arrayForAdjacentCpG[m][3] = score;       //4rt column its o/e score
-                    
+
                     rows_counter++;
                     //System.out.println("rows counter="+rows_counter);
                 }
-                
+
                 startWindow = endWindow + 1;
                 endWindow = endWindow + window;
-                
+
             } else {
                 startWindow++;
                 endWindow++;
             }
-            if (endWindow >= sequence.size()) {
+            if (endWindow >= sequence.length()) {
                 //an exw length =10 ara 0..9    kai endWindow=10, dhladh sto 11o stoixeio
-                window = originalWindow - (endWindow - sequence.size() + 1);
-                endWindow = sequence.size() - 1;
+                window = originalWindow - (endWindow - sequence.length() + 1);
+                endWindow = sequence.length() - 1;
             }
-            
+
         } //end of while
-        
-         System.out.println("score= " + totalScore + " percentCG= " + totalPercentCG);
-        
-         
-         //TODOS: CHECK IF ITS TRUE OR FALSE
-        return true;
+
+         //System.out.println("score= " + totalScore + " percentCG= " + totalPercentCG);
+        //TODOS: CHECK IF ITS TRUE OR FALSE
+        if (totalScore >= 0.8 && totalPercentCG >= 0.5) {
+            result = true;
+        } else {
+            result = false;
+        }
+        return result;
     }
-    
-    public static int findCG( List<ObservationDiscrete<HmmSequence.Packet>> str) {
+
+    public static int findCG(String str) {
 
         int i, j = 0;
 
-        for (i = 0; i < str.size() - 1; i++) {
+        for (i = 0; i < str.length() - 1; i++) {
             //int begin = Integer.parseInt(str.charAt(i));
             //test = str.substring(begin, begin + 1);
 
@@ -123,9 +128,8 @@ public class CpGIslandIdentification {
         }
         return j;
     }
-    
-    
-    public static int computeCytosine(int begin, int end, List<ObservationDiscrete<HmmSequence.Packet>> str, int window) {
+
+    public static int computeCytosine(int begin, int end, String str, int window) {
 
         int i = 0;
         int numOfC = 0;
@@ -145,7 +149,7 @@ public class CpGIslandIdentification {
         return numOfC;
     }
 
-    public static int computeGouanine(int begin, int end, List<ObservationDiscrete<HmmSequence.Packet>> str, int window) {
+    public static int computeGouanine(int begin, int end, String str, int window) {
 
         int i = 0;
         int numOfG = 0;
@@ -165,5 +169,5 @@ public class CpGIslandIdentification {
 
         return numOfG;
     }
-    
+
 }

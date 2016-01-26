@@ -15,6 +15,7 @@
  */
 package gr.demokritos.iit.cpgislanddetection.analysis;
 
+import gr.demokritos.iit.cpgislanddetection.entities.BaseSequence;
 import gr.demokritos.iit.cpgislanddetection.entities.IGenomicSequence;
 import java.util.List;
 
@@ -24,14 +25,13 @@ import java.util.List;
  */
 public class VectorSequenceDetector implements ICpGSequenceDetector {
 
-    public VectorSequenceDetector(List<IGenomicSequence> sequences, List<String> labels) {
+    public VectorSequenceDetector(List<BaseSequence> sequences, List<String> labels) {
         // Initialize classifier
         // Train classifier
     }
 
-    
     @Override
-    public boolean detect(IGenomicSequence seq) {
+    public boolean detect(BaseSequence seq) {
         return true;
         // Classify seq using your existing classifier
         // return true if the label indicates a CpG

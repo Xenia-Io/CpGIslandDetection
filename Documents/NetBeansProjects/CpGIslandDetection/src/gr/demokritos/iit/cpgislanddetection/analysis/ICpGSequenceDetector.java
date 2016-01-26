@@ -15,6 +15,7 @@
  */
 package gr.demokritos.iit.cpgislanddetection.analysis;
 
+import gr.demokritos.iit.cpgislanddetection.entities.BaseSequence;
 import gr.demokritos.iit.cpgislanddetection.entities.IGenomicSequence;
 
 /**
@@ -22,5 +23,5 @@ import gr.demokritos.iit.cpgislanddetection.entities.IGenomicSequence;
  * @author Xenia
  */
 public interface ICpGSequenceDetector {
-    public boolean detect(IGenomicSequence seq);
+    public boolean detect(BaseSequence seq);
 }

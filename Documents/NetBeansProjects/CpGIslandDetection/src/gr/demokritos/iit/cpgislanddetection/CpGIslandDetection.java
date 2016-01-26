@@ -59,13 +59,13 @@ public class CpGIslandDetection {
             fileNames = sFileNameArgs.split(";");
         }
         // Init classifier
-          ISequenceClassifier<List<ObservationDiscrete<HmmSequence.Packet>>> classifier
-                  = new HmmClassifier();
-        
+        ISequenceClassifier<List<ObservationDiscrete<HmmSequence.Packet>>> classifier
+                = new HmmClassifier();
+
         //for each file do the same work: train
         for (int i = 0; i < 3; i++) {
             // Read the sequences
-            
+
             lSeqs = reader.getSequencesFromFile(fileNames[i]);
 
             // Create HMM sequences
@@ -74,9 +74,9 @@ public class CpGIslandDetection {
             List<List<ObservationDiscrete<HmmSequence.Packet>>> lHmmSeqs = analyst.analyze(lSeqs);
 
             // Train classifier with the observations
-             classifier.train(lHmmSeqs, new File(fileNames[i]).getName());
+            classifier.train(lHmmSeqs, new File(fileNames[i]).getName());
         }
-        
+
         //Classify the test file        
         //First: Read the sequences
         lSeqs = reader.getSequencesFromFile(fileNames[1]);
@@ -84,26 +84,50 @@ public class CpGIslandDetection {
         ISequenceAnalyst<List<ObservationDiscrete<HmmSequence.Packet>>> analyst
                 = new HmmAnalyzer();
         List<List<ObservationDiscrete<HmmSequence.Packet>>> lHmmSeqs = analyst.analyze(lSeqs);
-        
+
         String str = null;
         String[] savedResults = new String[lHmmSeqs.size()];
-        
+
         //create a 2x2 array to store successes and failures for each class
         int[][] matrix = new int[2][2];
+        int successForCpG = 0, failForCpG = 0, successForNotCpG = 0, failForNotCpG = 0;
         
         for (int i = 0; i < lHmmSeqs.size(); i++) {
+            System.out.println("lHmmSeqs size="+ lHmmSeqs.size()+"  i="+i);
             str = classifier.classify(lHmmSeqs.get(i));
             System.out.println(str);
             savedResults[i] = str;
-            
-            
+
             //kalw sunarthsh pou exetazei an to sequence ikanopoiei ta CpG criterias
-            //sugkrinw to apotelesma ayths ths sunarthshs me to str 
-            //kai kanw to apotelesma save ston pinaka
+            if (CpGIslandIdentification.identify(lSeqs.get(i).getSymbolSequence()) == true && str.equals("posSamples.txt")) {
+
+                //Success for CpG class
+                successForCpG++;
+            } else if (CpGIslandIdentification.identify(lSeqs.get(i).getSymbolSequence()) == true && str.equals("negSamples.txt")) {
+
+                //fail for CpG class
+                failForCpG++;
+            } else if (CpGIslandIdentification.identify(lSeqs.get(i).getSymbolSequence()) == false && str.equals("negSamples.txt")) {
+
+                //Success for Not CpG class
+                successForNotCpG++;
+            } else if (CpGIslandIdentification.identify(lSeqs.get(i).getSymbolSequence()) == false && str.equals("posSamples.txt")) {
+
+                //fail for Not CpG class
+                failForNotCpG++;
+            }
             
         }
-        
+
         //Evaluation: calculation of classification rate and accuracy
+        double totalAccuracy = (successForNotCpG + successForCpG)/(successForCpG + failForCpG + failForNotCpG + successForNotCpG);
         
+        //missclassification rate for CpG class
+        double rate1 = failForCpG / ( failForCpG + successForCpG );
+        
+        //missclassification rate for Not CpG class
+        double rate2 = failForNotCpG / ( failForNotCpG + successForNotCpG );
+        
+        System.out.println(totalAccuracy +" "+ rate1 + " "+ rate2);
     }
 }

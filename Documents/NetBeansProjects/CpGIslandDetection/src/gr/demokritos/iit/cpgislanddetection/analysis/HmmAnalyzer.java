@@ -33,7 +33,6 @@ public class HmmAnalyzer implements ISequenceAnalyst<List<ObservationDiscrete<Pa
         mMap.put('T',Packet.T.observation());
         mMap.put('C',Packet.C.observation());
         
-        
         //System.out.println(baseSeq);
         // For each sequence
         for (BaseSequence bsCur : baseSeq) {
