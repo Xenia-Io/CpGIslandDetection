@@ -16,27 +16,23 @@ import java.util.List;
  */
 public class NGramGraphAnalyzer implements ISequenceAnalyst<List<DocumentNGramGraph>> {
 
+    @Override
+    public List<List<DocumentNGramGraph>> analyze(List<BaseSequence> baseSeq) {
+        
     
+        List<List<DocumentNGramGraph>> lRes = new ArrayList<>();
     
-    public List<DocumentNGramGraph> myAnalyze(List<BaseSequence> baseSeq) {
-        
-        List<DocumentNGramGraph> lRes = new ArrayList<>();
-        
-        // For each sequence
-        for (BaseSequence bsCur : baseSeq) {
-        
+        //For each sequence
+        for(BaseSequence bsCur : baseSeq){
             DocumentNGramGraph graph = new DocumentNGramGraph();
             graph.setDataString(bsCur.getSymbolSequence());
-            lRes.add(graph);
-            
+            List<DocumentNGramGraph> testSeq = new ArrayList<>();
+           
+            testSeq.add(graph);
+            lRes.add(testSeq);
         }
-                
+        
         return lRes;
-    }
+    }    
 
-    
-    @Override
-    public List<List<DocumentNGramGraph>> analyze(List<BaseSequence> gsSeq) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }

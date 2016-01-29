@@ -54,9 +54,6 @@ public class HmmClassifier implements ISequenceClassifier<List<ObservationDiscre
         String sResult = null;
         
         for (String sClassName : classModel.keySet()) { 
-            //System.out.println(classModel.keySet());
-            //System.out.println(classModel.containsKey(this));
-            
             //Get the model
             Hmm hTempModel = classModel.get(sClassName);  
             //Get the probability of the representation given the model
@@ -64,8 +61,7 @@ public class HmmClassifier implements ISequenceClassifier<List<ObservationDiscre
             //Select the model with the highest probability
             if (dProb > dMaxProb) {
                 dMaxProb = dProb;
-                sResult = sClassName;
-                
+                sResult = sClassName;   
                 //System.out.println(sResult);
             }
             // DEBUG
@@ -73,7 +69,6 @@ public class HmmClassifier implements ISequenceClassifier<List<ObservationDiscre
 //                System.out.println("Not assigned: :" + dProb);
 //            }
         }
-        
         if(sResult==null)
             System.out.println(classModel.keySet().size());
         // Return the class 

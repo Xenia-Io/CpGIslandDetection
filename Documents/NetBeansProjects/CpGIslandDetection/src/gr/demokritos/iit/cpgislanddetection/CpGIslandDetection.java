@@ -20,12 +20,15 @@ import gr.demokritos.iit.cpgislanddetection.analysis.HmmAnalyzer;
 import gr.demokritos.iit.cpgislanddetection.analysis.HmmClassifier;
 import gr.demokritos.iit.cpgislanddetection.analysis.ISequenceAnalyst;
 import gr.demokritos.iit.cpgislanddetection.analysis.ISequenceClassifier;
+import gr.demokritos.iit.cpgislanddetection.analysis.NGramGraphAnalyzer;
+import gr.demokritos.iit.cpgislanddetection.analysis.NGramGraphClassifier;
 import gr.demokritos.iit.cpgislanddetection.entities.BaseSequence;
 import gr.demokritos.iit.cpgislanddetection.entities.HmmSequence;
 import gr.demokritos.iit.cpgislanddetection.io.FASTAFileReader;
 import gr.demokritos.iit.cpgislanddetection.io.FASTAObfuscatorReader;
 import gr.demokritos.iit.cpgislanddetection.io.SequenceListFileReader;
 import gr.demokritos.iit.cpgislanddetection.io.IGenomicSequenceFileReader;
+import gr.demokritos.iit.jinsect.documentModel.representations.DocumentNGramGraph;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -140,7 +143,7 @@ public class CpGIslandDetection {
                 System.out.println("failForCpG" + failForCpG);
             } else if (identifier.identify(lSeqs.get(i).getSymbolSequence()) == false && str.equals(fileNames[1])) {
             
-                System.out.println(i);
+                //System.out.println(i);
                 //Success for Not CpG class
                 successForNotCpG++;
                 System.out.println("successForNotCpG" + successForNotCpG);
@@ -167,5 +170,12 @@ public class CpGIslandDetection {
                 0.0;
         
         System.out.println(totalAccuracy +" "+ rate1 + " "+ rate2);
+        
+        NGramGraphClassifier nGramGraphClassifier = new NGramGraphClassifier();
+        List<List<DocumentNGramGraph>> representation;
+        NGramGraphAnalyzer myAnalyst = new NGramGraphAnalyzer();
+        representation = myAnalyst.analyze(lSeqs);
+        for(int i=0; i<representation.size();i++)
+        nGramGraphClassifier.classify(representation.get(i));
     }
 }
