@@ -60,7 +60,7 @@ public class FileCreatorARFF {
                 isTrainingSet.add(instance);
               
          }
-         //System.out.println(isTrainingSet);
+         System.out.println(isTrainingSet);
          return isTrainingSet;
     }
     
