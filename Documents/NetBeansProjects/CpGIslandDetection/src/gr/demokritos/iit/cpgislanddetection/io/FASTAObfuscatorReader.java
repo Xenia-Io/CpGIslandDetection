@@ -12,8 +12,10 @@ import java.util.List;
 import java.util.Random;
 
 /**
- *
+ * 
  * @author Xenia
+ * 
+ * This file changes the original FASTA file with the positive CpG islands
  */
 public class FASTAObfuscatorReader extends FASTAFileReader {
 

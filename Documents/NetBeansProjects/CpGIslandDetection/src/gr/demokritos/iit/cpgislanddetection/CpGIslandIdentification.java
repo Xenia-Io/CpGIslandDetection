@@ -158,7 +158,7 @@ public class CpGIslandIdentification {
 
         for (i = 0; i < window; i++) {
 
-            if (str.contains("c")) {
+            if (str.contains("g")) {
 
                 if (str.charAt(i) == 'g') {
                     numOfG++;
