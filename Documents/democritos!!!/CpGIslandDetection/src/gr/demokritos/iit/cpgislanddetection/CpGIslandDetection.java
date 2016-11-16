@@ -65,8 +65,8 @@ public class CpGIslandDetection {
 
     //-----------------VECTOR ANALYSIS STARTS HERE--------------------------------------
         
-    String filePathForPositivesamples = "C:\\Users\\Xenia\\Documents\\NETBEANS\\CpGIslandDetection\\posSamples.txt";
-    String filePathForNegativeSamples = "C:\\Users\\Xenia\\Documents\\NETBEANS\\CpGIslandDetection\\negSamples.txt";
+    String filePathForPositivesamples = "C:\\Users\\Xenia\\Documents\\democritos!!!\\CpGIslandDetection\\posSamples.txt";
+    String filePathForNegativeSamples = "C:\\Users\\Xenia\\Documents\\democritos!!!\\CpGIslandDetection\\negSamples.txt";
     
     VectorPreProcessor vectorPreProcessor = new VectorPreProcessor();
     Instances trainingInstances = vectorPreProcessor.createTrainingInstances(filePathForPositivesamples, filePathForNegativeSamples);
@@ -89,7 +89,7 @@ public class CpGIslandDetection {
         
         
         //----------------------------HMM CLASSIFIER STARTS HERE----------------------------------
-        
+     /*   
         // Init classifier
         ISequenceClassifier<List<ObservationDiscrete<HmmSequence.Packet>>> classifier
                 = new HmmClassifier();
@@ -164,7 +164,7 @@ public class CpGIslandDetection {
         
         
         //----------------------------HMM EVALUATION STARTS-----------------------------------------------
-      
+      /*
         CpGIslandIdentification i = new CpGIslandIdentification();
 
         //create variables to store successes and failures for each class
@@ -210,7 +210,7 @@ public class CpGIslandDetection {
                 : 0.0;
 
         System.out.println(totalAccuracy + " " + rate1 + " " + rate2);
-
+*/
 //---------------------------------------HMM EVALUATION ENDS-----------------------------------------------
         
 
@@ -218,7 +218,7 @@ public class CpGIslandDetection {
 
 //---------------------------------------NGG STARTS-----------------------------------------------
 
-
+/*
         NGramGraphClassifier nGramGraphClassifier = new NGramGraphClassifier();
         List<List<DocumentNGramGraph>> representation;
         NGramGraphAnalyzer myAnalyst = new NGramGraphAnalyzer();
@@ -233,7 +233,7 @@ public class CpGIslandDetection {
         
         for (List<DocumentNGramGraph> representation1 : representation) {
             nGramGraphClassifier.classify(representation1);
-        }
+        } */
 //---------------------------------------NGG ENDS-----------------------------------------------
 
         

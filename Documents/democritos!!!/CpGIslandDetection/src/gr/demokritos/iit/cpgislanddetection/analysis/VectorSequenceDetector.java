@@ -61,7 +61,7 @@ public class VectorSequenceDetector implements ICpGSequenceDetector {
     public void classify(Instances trainingInstances, NaiveBayes nb) throws ParseException, Exception {
 
         VectorPreProcessor vectorPreProcessor = new VectorPreProcessor();
-        List<Vector<Integer>> listVectorForTestingSamples = vectorPreProcessor.createTestingSet("C:\\Users\\Xenia\\Documents\\NETBEANS\\CpGIslandDetection\\newsamples.txt");
+        List<Vector<Integer>> listVectorForTestingSamples = vectorPreProcessor.createTestingSet("C:\\Users\\Xenia\\Documents\\democritos!!!\\CpGIslandDetection\\newsamples.txt");
 
         // Test the model
         Evaluation eTest = new Evaluation(trainingInstances);
