@@ -1,0 +1,7 @@
+@relation dataset
+
+@attribute Prob1 numeric
+@attribute Prob2 numeric
+@attribute theClass {'CpG island','Not CpG island'}
+
+@data
