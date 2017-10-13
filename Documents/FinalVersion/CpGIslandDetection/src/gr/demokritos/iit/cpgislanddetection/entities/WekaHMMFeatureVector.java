@@ -5,9 +5,7 @@
  */
 package gr.demokritos.iit.cpgislanddetection.entities;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import weka.core.Attribute;
@@ -15,11 +13,14 @@ import weka.core.FastVector;
 import weka.core.Instances;
 import weka.core.Instance;
 import weka.core.converters.ArffSaver;
+
 /**
  *
  * @author Xenia
  */
 public class WekaHMMFeatureVector {
+    
+  
     
     public FastVector initializeWekaFeatureVector() {
          //https://weka.wikispaces.com/Programmatic+Use 
@@ -47,7 +48,7 @@ public class WekaHMMFeatureVector {
     public Instance fillFeatureVector(HMMFeatureVector vSource, Instances data) {
         double[] values = new double[data.numAttributes()];
         double min_prob;
-        //System.out.println("debugging = "+ vSource.myLengthForProbArray());
+//        System.out.println("debugging = "+ vSource.myLengthForProbArray());
         values[0] = vSource.getProbArrayAtIndex(0)/(vSource.getProbArrayAtIndex(0) + vSource.getProbArrayAtIndex(1));
         values[1] = vSource.getProbArrayAtIndex(1)/(vSource.getProbArrayAtIndex(0) + vSource.getProbArrayAtIndex(1));
         values[2] = data.attribute(2).indexOfValue(vSource.getLabel());
@@ -61,14 +62,10 @@ public class WekaHMMFeatureVector {
         //FastVector fvWekaAttributesHmm = new FastVector(3);
         
         //fill FastVector variable with the ArrayList of Attribute
-        System.out.println("size 1 = "+ vList.size() + " size 2 = " +vList2.size());
         FastVector fvWekaAttributesHmm = initializeWekaFeatureVector();
-        System.out.println("size 3 = " + fvWekaAttributesHmm.size());
         //fvWekaAttributesHmm.addElement(attributes);
         int size = vList.size()+vList2.size();
         Instances isSet = new Instances("dataset", fvWekaAttributesHmm, vList.size());
-
-        //Instances isSet = new Instances("dataset", fvWekaAttributesHmm, size);
 
         isSet.setClassIndex(isSet.numAttributes() - 1);
 
@@ -86,18 +83,12 @@ public class WekaHMMFeatureVector {
             isSet.add(i);
         }
         
-//        ArffSaver saver = new ArffSaver();
-//        saver.setInstances(isSet);
-//        saver.setFile(new File("./data/testWekaHMM.arff"));
-//         saver.setDestination(new File("./data/testWekaHMM.arff"));   // **not** necessary in 3.5.4 and later
-//        saver.writeBatch();
+        ArffSaver saver = new ArffSaver();
+        saver.setInstances(isSet);
+        saver.setFile(new File("./dataARFF/testWekaHMM.arff"));
+        saver.writeBatch();
 
-//        BufferedWriter writer = new BufferedWriter(new FileWriter("data/testWekaHMM.arff"));
-//        writer.write(isSet.toString());
-//        writer.flush();
-//        writer.close();
         return isSet;
 }
-    
     
 }
